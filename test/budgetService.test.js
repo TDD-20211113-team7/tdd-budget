@@ -30,8 +30,8 @@ describe('', () => {
 
   // TODO:
   it('cross month have data', () => {
-    initBudget([['202105', 3100], ['202106', 3000], ['202107', 0]]);
-    expect(budgetService.query('20210531', '20210601')).toBe(200);
+    initBudget([['202105', 3100], ['202106', 30000], ['202107', 0]]);
+    expect(budgetService.query('20210531', '20210601')).toBe(1100);
   });
 
   // TODO:

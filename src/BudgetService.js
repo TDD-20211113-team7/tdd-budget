@@ -2,8 +2,11 @@ const _ = require('lodash');
 const dayjs = require('dayjs');
 const Budget = require('./Budget');
 const BudgetRepo = require('./BudgetRepo');
-var isBetween = require('dayjs/plugin/isBetween')
-dayjs.extend(isBetween)
+const isBetween = require('dayjs/plugin/isBetween');
+const duration = require('dayjs/plugin/duration');
+
+dayjs.extend(isBetween);
+dayjs.extend(duration);
 
 class BudgetService {
   constructor(repo) {
@@ -41,19 +44,22 @@ class BudgetService {
    * @returns {Number}
    */
   getBudgetOfMonth(start, end, budget) {
+    // const totalDays = dayjs.duration(end.add({ days: 1 }).diff(start)).days();
+
+    // console.log('start, end', start.toString(), end.toString());
+    // console.log('totalDays', totalDays);
+
     if (budget.date.isSame(start.startOf('month'))) {
       if (budget.date.isSame(end.startOf('month'))) {
-        console.log('same month', (end.date() - start.date() + 1));
+        // console.log('same month', budget.date.endOf('month').date(), (end.date() - start.date() + 1))
         return budget.amount / budget.date.endOf('month').date() * (end.date() - start.date() + 1)
       } else {
-        console.log('diff month', (budget.date.date() - start.date() + 1));
-        return budget.amount / budget.date.endOf('month').date() * (budget.date.date() - start.date() + 1)
+        // console.log('diff month', budget.date.endOf('month').date(), (budget.date.endOf('month').date() - start.date() + 1))
+        return budget.amount / budget.date.endOf('month').date() * (budget.date.endOf('month').date() - start.date() + 1)
       }
-      
-      
     } else if (budget.date.isSame(end.startOf('month'))) {
-      console.log((end.date() - budget.date.date() + 1));
-      return budget.amount / (end.date() - budget.date.date() + 1)
+      // console.log('end month', (end.date() - budget.date.date() + 1), budget.date.endOf('month').date())
+      return budget.amount / budget.date.endOf('month').date() * (end.date() - budget.date.date() + 1)
     } else {
       return budget.amount;
     }
