@@ -7,5 +7,9 @@
   },
   "scripts": {
     "test": "jest"
+  },
+  "dependencies": {
+    "dayjs": "^1.10.7",
+    "lodash": "^4.17.21"
   }
 }
