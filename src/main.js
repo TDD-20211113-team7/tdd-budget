@@ -12,4 +12,4 @@ function initBudget(budgetRawList) {
     console.log('budgetRawList', budgetRawList);
 }
 
-console.log('query2', budgetService.query2('20210601', '20210630')[0]);
+console.log('query', budgetService.query('20210601', '20210630')[0]);

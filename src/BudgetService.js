@@ -1,8 +1,10 @@
 const _ = require('lodash');
 const dayjs = require('dayjs');
+const Budget = require('./Budget');
 const BudgetRepo = require('./BudgetRepo');
 var isBetween = require('dayjs/plugin/isBetween')
 dayjs.extend(isBetween)
+
 class BudgetService {
   constructor(repo) {
     /**
@@ -11,33 +13,6 @@ class BudgetService {
     this.repo = repo;
     this.getBudgetOfMonth = this.getBudgetOfMonth.bind(this);
   }
-
-  // /**
-  //  * 
-  //  * @public
-  //  * @param {String} startDate YYYYMMDD
-  //  * @param {String} endDate YYYYMMDD
-  //  * @returns {Number}
-  //  */
-  // query(startDate, endDate) {
-  //   const start = dayjs(new Date(startDate));
-  //   const startOfMonth = start.startOf('month');
-  //   const end = dayjs(new Date(endDate));
-  //   const endOfMonth = end.startOf('month');
-  //   const dayOfMonth = start.endOf('month').day();
-
-    
-  //   let budgetList = this.repo.getAll();
-  //   console.log(budgetList);
-  //   for (const budget of budgetList) {
-  //     if (startOfMonth.isSame(budget.date)) {
-  //       return budget.amount / dayOfMonth;
-  //     }
-  //   }
-
-  //   return 0;
-  // }
-
 
   /**
    * 
@@ -54,17 +29,31 @@ class BudgetService {
 
     const results = this.repo.budgetList.filter(element => {
       const isBetween = dayjs(element.date).isBetween(startOfMonth, endOfMonth, null, '[]');
-      console.log(isBetween, dayjs(element.date).format(), startOfMonth.format(), endOfMonth.format(), start.format(), end.format());
       return isBetween;
     })
     return _.sum(results.map(result => this.getBudgetOfMonth(start, end, result)));
   }
 
+  /**
+   * @param {dayjs.Dayjs} start 
+   * @param {dayjs.Dayjs} end 
+   * @param {Budget} budget 
+   * @returns {Number}
+   */
   getBudgetOfMonth(start, end, budget) {
     if (budget.date.isSame(start.startOf('month'))) {
-      return budget.amount / (budget.date.date() - start.date() + 1)
+      if (budget.date.isSame(end.startOf('month'))) {
+        console.log('same month', (end.date() - start.date() + 1));
+        return budget.amount / budget.date.endOf('month').date() * (end.date() - start.date() + 1)
+      } else {
+        console.log('diff month', (budget.date.date() - start.date() + 1));
+        return budget.amount / budget.date.endOf('month').date() * (budget.date.date() - start.date() + 1)
+      }
+      
+      
     } else if (budget.date.isSame(end.startOf('month'))) {
-      return budget.amount / (end.date - budget.date.date() + 1)
+      console.log((end.date() - budget.date.date() + 1));
+      return budget.amount / (end.date() - budget.date.date() + 1)
     } else {
       return budget.amount;
     }
