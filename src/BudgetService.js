@@ -44,21 +44,16 @@ class BudgetService {
    * @returns {Number}
    */
   getBudgetOfMonth(start, end, budget) {
-    // const totalDays = dayjs.duration(end.add({ days: 1 }).diff(start)).days();
-
-    // console.log('start, end', start.toString(), end.toString());
+    // const totalDays = dayjs.duration(end.diff(start)).days() + 1;
     // console.log('totalDays', totalDays);
 
     if (budget.date.isSame(start.startOf('month'))) {
       if (budget.date.isSame(end.startOf('month'))) {
-        // console.log('same month', budget.date.endOf('month').date(), (end.date() - start.date() + 1))
         return budget.amount / budget.date.endOf('month').date() * (end.date() - start.date() + 1)
       } else {
-        // console.log('diff month', budget.date.endOf('month').date(), (budget.date.endOf('month').date() - start.date() + 1))
         return budget.amount / budget.date.endOf('month').date() * (budget.date.endOf('month').date() - start.date() + 1)
       }
     } else if (budget.date.isSame(end.startOf('month'))) {
-      // console.log('end month', (end.date() - budget.date.date() + 1), budget.date.endOf('month').date())
       return budget.amount / budget.date.endOf('month').date() * (end.date() - budget.date.date() + 1)
     } else {
       return budget.amount;
