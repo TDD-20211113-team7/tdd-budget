@@ -1,10 +1,6 @@
 const sum = require('lodash/sum');
 const dayjs = require('dayjs');
-const isBetween = require('dayjs/plugin/isBetween');
-
 const BudgetRepo = require('./BudgetRepo');
-
-dayjs.extend(isBetween);
 
 class BudgetService {
   /**
@@ -25,19 +21,9 @@ class BudgetService {
   query(startDate, endDate) {
     const start = dayjs(startDate);
     const end = dayjs(endDate);
-
     const budgets = this.repo.getAll();
-    const intersectedBudgets = budgets.filter(({ date }) =>
-      date.isBetween(start.startOf('month'), end.endOf('month'), null, '[]')
-    );
-
-    const amounts = intersectedBudgets.map(budget =>
-      budget.getAmount(start, end)
-    );
-    const totalAmount = sum(amounts);
-
-    return totalAmount;
+    return sum(budgets.map(budget => budget.getAmount(start, end)));
   }
 }
-  
+
 module.exports = BudgetService;

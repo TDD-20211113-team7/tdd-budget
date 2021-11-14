@@ -1,4 +1,7 @@
 const dayjs = require('dayjs');
+const minMax = require('dayjs/plugin/minMax');
+
+dayjs.extend(minMax);
 
 class Budget {
   /**
@@ -23,27 +26,26 @@ class Budget {
   }
 
   /**
+   * @public
    * @param {dayjs.Dayjs} start 
    * @param {dayjs.Dayjs} end 
    * @returns {Number} amount
    */
   getAmount(start, end) {
-    let overlappingDays = 0;
-    if (this.date.isSame(start.startOf('month'))) {
-      if (this.date.isSame(end.startOf('month'))) {
-        overlappingDays = (end.date() - start.date() + 1)
-      } else {
-        overlappingDays = (this.date.endOf('month').date() - start.date() + 1)
-      }
-    } else if (this.date.isSame(end.startOf('month'))) {
-      overlappingDays = (end.date() - this.date.date() + 1)
-    } else {
-      overlappingDays = this.getDays();
+    const overlappingStart = dayjs.max(start, this.getFirstDay());
+    const overlappingEnd = dayjs.min(end, this.getLastDay());
+
+    if (overlappingEnd.isBefore(overlappingStart)) {
+      return 0;
     }
+
+    const overlappingDays = overlappingEnd.diff(overlappingStart, 'days') + 1;
+
     return this.getDailyAmount() * overlappingDays;
   }
 
   /**
+   * @private
    * @returns {Number} daily amount
    */
   getDailyAmount() {
@@ -51,10 +53,27 @@ class Budget {
   }
 
   /**
+   * @private
    * @returns {Number} days in month
    */
   getDays() {
     return this.date.endOf('month').date();
+  }
+
+  /**
+   * @private
+   * @returns {dayjs.Dayjs}
+   */
+  getLastDay() {
+    return this.date.endOf('month');
+  }
+
+  /**
+   * @private
+   * @returns {dayjs.Dayjs}
+   */
+  getFirstDay() {
+    return this.date;
   }
 }
 
