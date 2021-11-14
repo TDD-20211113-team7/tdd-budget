@@ -1,13 +1,22 @@
 const Budget = require('./Budget');
 
 class BudgetRepo {
-
+  /**
+   * @constructor
+   * @param {Budget[]} budgetList 
+   */
   constructor(budgetList) {
     /**
-     * @type {Array<Budget>}
+     * @private
      */
     this.budgetList = budgetList;
   }
+
+  /**
+   * Get all budgets
+   * @public
+   * @returns {Budget[]} all budgets
+   */
   getAll() {
     return this.budgetList;
   }
