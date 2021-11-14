@@ -14,8 +14,8 @@ class BudgetService {
   /**
    * Get total amount from specify time range. [startDate, endDate]
    * @public
-   * @param {String|Date} startDate YYYYMMDD
-   * @param {String|Date} endDate YYYYMMDD
+   * @param {String|Date} startDate String('YYYYMMDD') or Date
+   * @param {String|Date} endDate String('YYYYMMDD') or Date
    * @returns {Number} total amount
    */
   query(startDate, endDate) {

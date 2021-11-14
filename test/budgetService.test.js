@@ -18,34 +18,44 @@ describe('', () => {
     expect(budgetService.query('20211117', '20211117')).toBe(1000);
   });
 
-  it('one month date have data', () => {
+  it('one month, with data', () => {
     initBudget([['202106', 3000], ['202107', 0]]);
     expect(budgetService.query('20210601', '20210630')).toBe(3000);
   });
 
-  it('one month date no data', () => {
+  it('one month, without data', () => {
     initBudget([['202106', 3000], ['202107', 0]]);
     expect(budgetService.query('20210701', '20210731')).toBe(0);
   });
 
-  it('cross month have data', () => {
+  it('cross month, with data', () => {
     initBudget([['202105', 3100], ['202106', 30000], ['202107', 0]]);
     expect(budgetService.query('20210531', '20210601')).toBe(1100);
   });
 
-  it('cross month partial no data', () => {
+  it('cross month, partial without data', () => {
     initBudget([['202105', 3100], ['202106', 0], ['202107', 0]]);
     expect(budgetService.query('20210531', '20210601')).toBe(100);
   });
 
-  it('cross multiple month have data', () => {
+  it('cross multiple months', () => {
     initBudget([['202105', 3100], ['202106', 3000], ['202107', 3100]]);
     expect(budgetService.query('20210531', '20210701')).toBe(3200);
   });
 
-  it('cross multiple partial month no data', () => {
+  it('cross multiple months, partial without data', () => {
     initBudget([['202105', 3100], ['202106', 0], ['202107', 3100]]);
     expect(budgetService.query('20210531', '20210701')).toBe(200);
+  });
+
+  it('invalid query', () => {
+    initBudget([['202105', 3100], ['202106', 0], ['202107', 3100]]);
+    expect(budgetService.query('20210701', '20210531')).toBe(0);
+  });
+
+  it('empty budget', () => {
+    initBudget([]);
+    expect(budgetService.query('20210531', '20210701')).toBe(0);
   });
 
   function initBudget(budgetRawList) {   
