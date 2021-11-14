@@ -58,6 +58,11 @@ describe('', () => {
     expect(budgetService.query('20210531', '20210701')).toBe(0);
   });
 
+  it('support date instance', () => {
+    initBudget([['202105', 3100], ['202106', 0], ['202107', 31000]]);
+    expect(budgetService.query(new Date('2021-05-31T00:00:00.000Z'), new Date('2021-07-01T00:00:00.000Z'))).toBe(1100);
+  });
+
   function initBudget(budgetRawList) {   
     budgetRepo = new BudgetRepo(budgetRawList.map(budgetRaw => new Budget(budgetRaw[0], budgetRaw[1])));
     budgetService = new BudgetService(budgetRepo);
